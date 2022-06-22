@@ -7,3 +7,6 @@ Problem Set 1: Space Cows Transportation
 - Part A: Transporting Cows Across Space
   - Problem A.1: Loading Cow Data (I/O)
   - Problem A.2: Greedy Cow Transport (Greedy Algorithm)
+  - Problem A.3: Brute Force Cow Transport (Brute Force Algorithm)
+  - Problem A.4: Comparing the Cow Transport Algorithms (modularization)
+  - Problem A.5: Writeup (as printed string in the main() function)

@@ -4,7 +4,7 @@ Problem Set 1 from Introduction to Computational Thinking and Data Science
 MITOPENCOURSEWARE
 """
 
-from problem_set_1.ps1_partition import get_partitions
+from ps1_partition import get_partitions
 import time
 
 #================================
@@ -115,17 +115,29 @@ def brute_force_cow_transport(cows, limit=10):
     transported on a particular trip and the overall list containing all the
     trips
     """
-    itemsCopy = sorted(cows.items(), key=lambda x: x[1], reverse=True)
-    itemsCopy_dct = dict(itemsCopy)
-
-    def maxVal(itemsCopy, limit):
-        if itemsCopy == [] and limit == 0:
-            result = []
-        elif itemsCopy[0][1] > limit:
-            result = maxVal(itemsCopy[1:], limit)
-        else:
-            next_item = itemsCopy[0]
-            with_val, with_totake = maxVal(itemsCopy[1:], limit - next_item[1])
+    # copy dictionary's content
+    cows_copy_list = [(cow_name, cow_weight)
+                      for (cow_name, cow_weight) in cows.items()]
+    # initialize the minimum number of trips and the cows taken on that trip
+    min_num_trip, cows_taken = len(cows_copy_list), None
+    # iterate over all possible partitions of cows in the list
+    for cow_partitions in get_partitions(cows_copy_list):
+        # initialize number of trips
+        num_trip, weight_trip_list = 0, []
+        # iterate over cows in partition
+        for cows in cow_partitions:
+            # increment number of trips
+            num_trip += 1
+            # add the weight of the trip to the list of weight for each trip
+            weight_trip_list.append(sum([cow_weight
+                                         for _, cow_weight in cows]))
+        # check if maximum weight is less than limit and if number of trip is less than minimum number of trip
+        if max(weight_trip_list) <= limit and num_trip < min_num_trip:
+            # update minimum number of trip and cows taken
+            min_num_trip = num_trip
+            cows_taken = [[cow[0] for cow in cows_trip]
+                          for cows_trip in cow_partitions]
+    return cows_taken
 
 
 # Problem 4
@@ -142,12 +154,48 @@ def compare_cow_transport_algorithms():
     Returns:
     Does not return anything.
     """
-    # TODO: Your code here
-    pass
+    # running and measuring time for brute_force_cow_transport
+    result, time = timing_algorithm(brute_force_cow_transport)
+    print_algorithm_result("brute force", result, time)
+
+    # running and measuring time for greedy_cow_transport
+    result, time = timing_algorithm(greedy_cow_transport)
+    print_algorithm_result("greedy", result, time)
+
+
+def timing_algorithm(algorithm):
+    """Run provided algorithm as a function on selected dataset.
+       Returns result of run of algorithm and running time."""
+    start = time.time()
+    result = algorithm(load_cows('datasets/ps1_cow_data.txt'))
+    end = time.time()
+    return result, end - start
+
+
+def print_algorithm_result(name, result, time):
+    """Formats and prints name, result and time."""
+    print(f"\nResults for {name} algorithm:")
+    print(f"  - Number of trips: {len(result)}")
+    print(f"  - Time: {time:.5f} seconds")
 
 
 def main():
-    print(greedy_cow_transport(load_cows('datasets/ps1_cow_data_2.txt')))
+    """Runs different parts of this module with comments and results."""
+    # Problem 4
+    compare_cow_transport_algorithms()
+
+    # Problem 5
+    print(
+        "\nThe greedy algorithm run faster because it does not go through all possible solutions."
+    )
+    print("\nThe greedy algorithm does not return the optimal solution.")
+    print(
+        "The greedy algorithm only select the solution that meet requirement according to the ordering of the key funcrion."
+    )
+    print("\nThe brute force algorithm returns the optimal solution.")
+    print(
+        "The brute force algorithm iterates through all possible solution and select the best possible one.\n"
+    )
 
 
 if __name__ == '__main__':

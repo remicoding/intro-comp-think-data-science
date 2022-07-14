@@ -184,19 +184,6 @@ def main():
     # Problem 4
     compare_cow_transport_algorithms()
 
-    # Problem 5
-    print(
-        "\nThe greedy algorithm run faster because it does not go through all possible solutions."
-    )
-    print("\nThe greedy algorithm does not return the optimal solution.")
-    print(
-        "The greedy algorithm only select the solution that meet requirement according to the ordering of the key funcrion."
-    )
-    print("\nThe brute force algorithm returns the optimal solution.")
-    print(
-        "The brute force algorithm iterates through all possible solution and select the best possible one.\n"
-    )
-
 
 if __name__ == '__main__':
     main()
